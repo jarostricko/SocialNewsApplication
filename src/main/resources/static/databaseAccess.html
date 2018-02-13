@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="js/databaseAccess.js"></script>
+    <title>Database access page</title>
+    <style>
+        @media ( max-width: 585px ) {
+
+            .input-group span.input-group-btn,.input-group input,.input-group button{
+                display: block;
+                width: 100%;
+                border-radius: 0;
+                margin: 0;
+            }
+            .input-group {
+                position: relative;
+            }
+            .input-group span.data-up{
+                position: absolute;
+                top: 0;
+            }
+            .input-group span.data-dwn{
+                position: absolute;
+                bottom: 0;
+            }
+            .form-control.text-center {
+                margin: 34px 0;
+            }
+            .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group{
+                margin-left:0;
+            }
+
+        }
+    </style>
+</head>
+<body>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1>Database access page</h1>
+        <p>Here you can access database of web app SocialNewsApplication.</p>
+        <ul class="nav nav-pills" role="tablist">
+            <li class="nav-item">
+                <a id="confTabBtn" class="nav-link active" data-toggle="pill" href="#configTab">Config</a>
+            </li>
+            <li class="nav-item">
+                <a id="fbPageTabBtn" class="nav-link" data-toggle="pill" href="#fbPageTab">FaceBook pages</a>
+            </li>
+            <li class="nav-item">
+                <a id="ytChannelTabBtn" class="nav-link" data-toggle="pill" href="#ytChannelTab">YouTube channels</a>
+            </li>
+            <li class="nav-item">
+                <a id="credentialsTabBtn" class="nav-link" data-toggle="pill" href="#credentialsTab">Credentials</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="tab-content">
+        <!---------------------HERE STARTS *CONFIGURATION* PART------------------------->
+        <div id="configTab" class="tab-pane in active"><br>
+            <div class="container">
+                <h4>Configuration table</h4>
+                <p>This table contains currently used configuration.</p>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tbody id="configstablebody">
+                        <tr class="fbNumber">
+                            <td><b>Facebook post - number of posts to fetch</b></td>
+                            <td id="fbNumberTd" class="editableColumns">
+                                <div class="btn-group number-spinner">
+                                <span class="input-prepend data-dwn">
+                                    <button class="btn btn-default" data-dir="dwn" disabled>-</button>
+                                </span>
+                                    <input disabled type="text" class="form-control input-box text-center" value="1" min="0" max="100" style="max-width:100px;">
+                                    <span class="input-append data-up">
+                                    <button class="btn btn-default" data-dir="up" disabled>+</button>
+                                </span>
+                                </div>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="ytNumber">
+                            <td><b>YouTube channel - number of videos to fetch</b></td>
+                            <td id="ytNumberTd" class="editableColumns">
+                                <div class="btn-group number-spinner">
+                                <span class="input-prepend data-dwn">
+                                    <button class="btn btn-default" data-dir="dwn" disabled>-</button>
+                                </span>
+                                    <input disabled type="text" class="form-control input-box text-center" value="1" min="0" max="180" style="max-width:100px;">
+                                    <span class="input-append data-up">
+                                    <button class="btn btn-default" data-dir="up" disabled>+</button>
+                                </span>
+                                </div>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="maxDays">
+                            <td><b>Post can be old max days</b></td>
+                            <td id="maxDaysTd" class="editableColumns">
+                                <div class="btn-group number-spinner">
+                                <span class="input-prepend data-dwn">
+                                    <button class="btn btn-default" data-dir="dwn" disabled>-</button>
+                                </span>
+                                    <input disabled type="text" class="form-control input-box text-center" value="1" min="0" max="365" style="max-width:100px;">
+                                    <span class="input-append data-up">
+                                    <button class="btn btn-default" data-dir="up" disabled>+</button>
+                                </span>
+                                </div>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="order">
+                            <td><b>YouTube posts order</b></td>
+                            <td id="orderTd" class="editableColumns">
+                                <select disabled class="form-control" id="selectOrder" style="max-width:200px;">
+                                    <option value='null'>- choose -</option>
+                                    <option value="date">date</option>
+                                    <option value="rating">rating</option>
+                                    <option value="relevance">relevance</option>
+                                    <option value="title">title</option>
+                                    <option value="viewCount">viewCount</option>
+                                </select>
+
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="sortBy">
+                            <td><b>Sort by </b></td>
+                            <td id="sortByTd" class="editableColumns">
+                                <label class="radio-inline">
+                                    <input id="byDateRadio" type="radio" name="optradio" disabled>Newest first
+                                </label>
+                                <label class="radio-inline">
+                                    <input id="byPopularityRadio" type="radio" name="optradio" disabled>Most popular
+                                    first
+                                </label>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="fbPostOn">
+                            <td><b>Facebook posts on</b></td>
+                            <td id="fbPostOnTd" class="editableColumns">
+                                <input id="fbPostOnCh" type="checkbox" class="form-check-input" disabled>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="fbVideoOn">
+                            <td><b>Facebook videos on</b></td>
+                            <td id="fbVideoOnTd" class="editableColumns">
+                                <input id="fbVideoOnCh" type="checkbox" class="form-check-input" disabled>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="ytchon">
+                            <td><b>Youtube search based on channels on</b></td>
+                            <td id="ytchonTd" class="editableColumns">
+                                <input id="ytchonCh" type="checkbox" class="form-check-input" disabled>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="ytkon">
+                            <td><b>Youtube search based on keywords on</b></td>
+                            <td id="ytkonTd" class="editableColumns">
+                                <input id="ytkonCh" type="checkbox" class="form-check-input" disabled>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="configrefresh" type="button" class="btn">Refresh</button>
+            </div>
+        </div>
+        <!---------------------HERE STARTS *FACEBOOK PAGE* PART------------------------->
+        <div id="fbPageTab" class="tab-pane fade"><br>
+            <div class="container">
+                <h4>Facebook pages table</h4>
+                <p>This table contains currently used facebook pages.</p>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Page name</th>
+                            <th>Page id</th>
+                            <th>Is page active?</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="fbpagestablebody">
+                        <tr>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="fbpagerefresh" type="button" class="btn">Refresh</button>
+            </div>
+            <br>
+            <div class="container">
+                <h2>Here you can add a new FB page do database</h2>
+                <div class="form-group">
+                    <label for="fbnameinput">FaceBook pagename:</label>
+                    <input type="text" class="form-control" id="fbnameinput" placeholder="FaceBook pagename"
+                           name="fbnameinput">
+                </div>
+                <div class="form-group">
+                    <label for="fbidinput">FaceBook page ID:</label>
+                    <input type="text" class="form-control" id="fbidinput" placeholder="FaceBook page ID"
+                           name="fbidinput">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input id="fbactiveinput" class="form-check-input" type="checkbox" name="active"> Activate page
+                    </label>
+                </div>
+                <button id="insertfbp" type="submit" class="btn btn-primary">Insert to DB</button>
+            </div>
+        </div>
+        <!-------------------HERE STARTS *YOUTUBE CHANNELS* PART---------------------->
+        <div id="ytChannelTab" class="tab-pane fade"><br>
+            <div class="container">
+                <h4>YouTube channels table</h4>
+                <p>This table contains currently used Youtube channels.</p>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Channel name</th>
+                            <th>Channel id</th>
+                            <th>Keywords</th>
+                            <th>Is channel active?</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="ytchanneltablebody">
+                        <tr>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="ytchannelrefresh" type="button" class="btn">Refresh</button>
+            </div>
+            <br>
+            <div class="container">
+                <h2>Here you can add a new YT channel do database</h2>
+                <div class="form-group">
+                    <label for="ytnameinput">YouTube channel name:</label>
+                    <input type="text" class="form-control" id="ytnameinput" placeholder="YouTube channel name"
+                           name="ytnameinput">
+                </div>
+                <div class="form-group">
+                    <label for="ytidinput">YouTube channel ID:</label>
+                    <input type="text" class="form-control" id="ytidinput" placeholder="YouTube channel ID"
+                           name="ytidinput">
+                </div>
+                <div class="form-group">
+                    <label for="ytkeyinput">YouTube channel keywords:</label>
+                    <input type="text" class="form-control" id="ytkeyinput"
+                           placeholder="Keywords to search by... (eg. 'It, news, technology,....')"
+                           name="ytkeyinput">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input id="ytactiveinput" class="form-check-input" type="checkbox" name="active"> Activate
+                        channel
+                    </label>
+                </div>
+                <button id="insertytch" type="submit" class="btn btn-primary">Insert to DB</button>
+            </div>
+        </div>
+        <!----------------HERE STARTS *CREDENTIALS* PART------------------------------>
+        <div id="credentialsTab" class="tab-pane fade"><br>
+            <div class="container">
+                <h4>Credentials table</h4>
+                <p>This table contains currently used credentials.</p>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tbody id="credentialstablebody">
+                        <tr class="appId">
+                            <td><b>Facebook App ID</b></td>
+                            <td id="appIdTd" class="editableColumns"></td>
+                            <td>
+                                <button  type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
+                                <button style='display: none'  type='button' class='btn btn-danger btn-sm saveCred'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="appSec">
+                            <td><b>Facebook App Secret</b></td>
+                            <td id="appSecTd" class="editableColumns"></td>
+                            <td>
+                                <button  type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
+                                <button style='display: none'  type='button' class='btn btn-danger btn-sm saveCred'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="apiKey">
+                            <td><b>YouTube API Key</b></td>
+                            <td id="apiKeyTd" class="editableColumns"></td>
+                            <td>
+                                <button  type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
+                                <button style='display: none'  type='button' class='btn btn-danger btn-sm saveCred'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="credentialsrefresh" type="button" class="btn">Refresh</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

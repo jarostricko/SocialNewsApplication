@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <style>
+
+    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>setTimeout(function () {
+    initialization()
+}, 1000);</script>
+
+<script>function initialization() {
+    console.log(screen.height);
+    console.log(screen.width);
+    var divs = document.getElementsByTagName("div");
+    divs[1].style.display = "none";
+    divs[2].style.display = "none";
+    getNext();
+    startTimer();
+}
+</script>
+
+<script>
+    var timer = 5000;
+
+    function startTimer() {
+        var interval = setInterval(function () {
+            var timeLimit = getNext();
+            if (timeLimit !== 0) {
+                clearInterval(interval)
+                console.log("Iam HERE");
+                setTimeout(switchDivsWithVideo(), 1000);
+                setTimeout(function () {
+                    console.log("I was waiting: " + timeLimit + " ms.");
+                    startTimer();
+                }, timeLimit)
+
+            } else {
+                setTimeout(switchDivs(), 1000);
+            }
+        }, timer)
+
+    }
+
+</script>
+
+
+<script>
+    function switchDivsWithVideo() {
+        var divs = document.getElementsByTagName("div");
+        for (var i = 0; i < divs.length; i = i + 1) {
+            if (divs[i].getAttribute("class") === "fb-video") divs[i].style.display = "block";
+            else divs[i].style.display = "none";
+        }
+    }
+    function switchDivs() {
+        var divs = document.getElementsByClassName("fb-post");
+        if (divs[0].style.display === "none") {
+            divs[1].style.display = "none";
+            divs[0].style.display = "block";
+            console.log("displaying div 1");
+        } else {
+            divs[0].style.display = "none";
+            divs[1].style.display = "block";
+            console.log("displaying div 2");
+        }
+
+    }
+
+    function getHiddenPostDiv() {
+        document.getElementById("fb_video").style.display = "none";
+        var divs = document.getElementsByClassName("fb-post");
+        for (var i = 0; i < divs.length; i = i + 1) {
+            if (divs[i].style.display === "none") {
+                return divs[i];
+            }
+        }
+
+    }
+    function showPost(nextPostObject) {
+        var postId = nextPostObject.postId;
+        var postUrl = nextPostObject.postUrl;
+        var postType = nextPostObject.postType;
+        var timeLimit = nextPostObject.timeLimit;
+        var postHeight = nextPostObject.postHeight;
+        var postWidth = nextPostObject.postWidth;
+        var video = nextPostObject.video;
+        var divToShow;
+        if (video) {
+            divToShow = document.getElementById("fb_video");
+            divToShow.setAttribute("data-href", "https://www.facebook.com/video.php?v=" + postId);
+            if (postHeight > 720) divToShow.setAttribute("data-height", "720");
+            else divToShow.setAttribute("data-height", postHeight);
+            console.log("return, video: " + timeLimit);
+            return timeLimit;
+        } else {
+            divToShow = getHiddenPostDiv();
+            divToShow.setAttribute("data-href", postUrl);
+            console.log("return 0");
+            return 0;
+        }
+
+    }
+    function getNext() {
+        var timeLimit = 0;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                var nextPostObject = JSON.parse(this.responseText);
+                timeLimit = showPost(nextPostObject);
+            }
+        };
+        xhttp.open("get", "/nextpost", false);
+        xhttp.send();
+        console.log("timeLimit:" + timeLimit)
+        return timeLimit;
+    }
+</script>
+
+
+<body>
+
+<div id="fb_post_1"
+     class="fb-post"
+     align="center"
+     data-href=""
+     data-width="500">
+    <p>Test 1</p>
+
+</div>
+
+<div id="fb_post_2"
+     class="fb-post"
+     align="center"
+     data-href=""
+     data-width="500">
+    <p>Test 2</p>
+</div>
+
+<div id="fb_video"
+     class="fb-video"
+     data-href=""
+     data-height=""
+     data-autoplay="true"
+     data-allowfullscreen="true"
+     data-show-captions="true"
+     data-show-text="true">
+    <p>Test 3</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var timer = 5000;
+        console.log(screen.height);
+        console.log(screen.width);
+        $(document).ready(function () {
+            // jQuery methods go here...
+            //$("div:not(#fb_post_1)").hide();
+            //document.getElementById("fb_post_2").setAttribute("class", "");
+            document.getElementById("iframe2").style.display = "none";
+            document.getElementById("fb_video").style.display = "none";
+            getNext();
+            startTimer();
+
+        });
+    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script>
+    function reloadScript() {
+        $('#fb_post_script').remove();
+        $.getScript("facebookPostScript.js", function () {
+            $('script:last').attr('id', 'fb_post_script');
+        });
+    }
+
+
+    function startTimer() {
+        var interval = setInterval(function () {
+            var timeLimit = getNext();
+            if (timeLimit !== 0) {
+                clearInterval(interval);
+                FB.XFBML.parse(document.getElementById("video"));
+                setTimeout(switchDivsWithVideo(), 1000);
+                setTimeout(function () {
+                    console.log("I was waiting: " + timeLimit + " ms.");
+                    startTimer();
+                }, timeLimit)
+
+            } else {
+                setTimeout(switchDivs(), 2500);
+            }
+        }, timer)
+    }
+</script>
+
+<script>
+    function switchDivsWithVideo() {
+        var divs = document.getElementsByClassName("iframe");
+        for (var i = 0; i < divs.length; i = i + 1) {
+            divs[i].style.display = "none";
+        }
+        document.getElementById("fb_video").style.display = "block";
+    }
+    function switchDivs() {
+        var divs = document.getElementsByClassName("iframe");
+        if (divs[0].style.display === "none") {
+            divs[1].style.display = "none";
+            divs[0].style.display = "block";
+
+            console.log("displaying div 1");
+        } else {
+            divs[0].style.display = "none";
+            divs[1].style.display = "block";
+
+            console.log("displaying div 2");
+        }
+
+    }
+
+    function getHiddenPostIframe() {
+        document.getElementById("fb_video").style.display = "none";
+        var divs = document.getElementsByClassName("iframe")
+        for (var i = 0; i < divs.length; i = i + 1) {
+            if (divs[i].style.display === "none") {
+                return divs[i];
+            }
+        }
+
+    }
+    function showPost(nextPostObject) {
+        var postId = nextPostObject.postId;
+        var postUrl = nextPostObject.postUrl;
+        var postType = nextPostObject.postType;
+        var timeLimit = nextPostObject.timeLimit;
+        var postHeight = nextPostObject.postHeight;
+        var postWidth = nextPostObject.postWidth;
+        var video = nextPostObject.video;
+        var divToShow;
+        if (video) {
+            //divToShow = document.getElementById("fb_video2");
+//            $("#fb_video2").remove();
+//            $("#fb-root").remove();
+//            $("body").append("<div id='fb-root'></div>");
+//            var txt = "<div id='fb_video2' class='fb-video' data-autoplay='true' " +
+//                " data-href='https://www.facebook.com/video.php?v=" + postId + "' data-width='500' data-show-text='false'>" +
+//                "<div class='fb-xfbml-parse-ignore'></div></div>";
+//            $("body").append(txt)
+            divToShow = document.getElementById("fb_video");
+            divToShow.setAttribute("data-href", "https://www.facebook.com/video.php?v=" + postId);
+
+            divToShow.setAttribute("data-height", screen.availHeight);
+            divToShow.setAttribute("data-width", screen.availWidth);
+
+            console.log("return, video: " + timeLimit);
+            console.log("width: " + postWidth + " Avail: " + screen.availWidth);
+            console.log("height: " + postHeight + " Avail: " + screen.availHeight);
+            return timeLimit;
+        } else {
+            divToShow = getHiddenPostIframe();
+            divToShow.setAttribute("src", "https://www.facebook.com/plugins/post.php?href=" + postUrl + "%2F&show_text=true&fbAppId=805156846329043");
+            divToShow.src = divToShow.src;
+            //divToShow.contentWindow.location.reload();
+            console.log("return 0");
+            return 0;
+        }
+
+    }
+    function getNext() {
+        var timeLimit = 0;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                var nextPostObject = JSON.parse(this.responseText);
+                timeLimit = showPost(nextPostObject);
+
+                //reloadScript();
+            }
+        };
+        xhttp.open("get", "/nextpost", false);
+        xhttp.send();
+        console.log("timeLimit:" + timeLimit)
+        return timeLimit;
+    }
+</script>
+
+
+<body>
+<div id="fb-root"></div>
+<script>window.fbAsyncInit = function () {
+    FB.init({
+        fbAppId: '805156846329043',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v2.10'
+    });
+    FB.AppEvents.logPageView();
+};
+
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+        return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="iframes"
+     align="center">
+<iframe id="iframe1"
+        class="iframe"
+        src="https://www.facebook.com/plugins/post.php?href=https://www.facebook.com/kpi.fei.tuke/posts/1584680464902486%2F&width=500&show_text=true&fbAppId=805156846329043&height=290"
+        width="1000"
+        height="700"
+        style="border:none;overflow:hidden"
+        scrolling="no"
+        frameborder="0"
+        allowTransparency="true"></iframe>
+
+<iframe id="iframe2"
+        class="iframe"
+        src="https://www.facebook.com/plugins/post.php?href=https://www.facebook.com/kpi.fei.tuke/posts/1584680464902486%2F&width=500&show_text=true&fbAppId=805156846329043&height=290"
+        width="500"
+        height="700"
+        style="border:none;overflow:hidden"
+        scrolling="no"
+        frameborder="0"
+        allowTransparency="true"></iframe>
+</div>
+<div id="video">
+    <div id="fb_video"
+         class="fb-video"
+         data-autoplay="true"
+         data-href=""
+         data-width=""
+         data-height=""
+         data-allowfullscreen="true"
+         data-show-captions="true"
+         data-show-text="true">
+        <div class="fb-xfbml-parse-ignore">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

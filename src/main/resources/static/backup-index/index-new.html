@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var timer = 5000;
+        console.log(screen.height);
+        console.log(screen.width);
+        $(document).ready(function () {
+            // jQuery methods go here...
+            //$("div:not(#fb_post_1)").hide();
+            document.getElementById("fb_post_2").firstElementChild.setAttribute("class", "");
+            document.getElementById("fb_post_2").style.display = "none";
+            document.getElementById("fb_video").style.display = "none";
+            getNext();
+            startTimer();
+
+        });
+    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script>
+    function reloadScript() {
+        $('#fb_post_script').remove();
+        $.getScript("facebookPostScript.js", function () {
+            $('script:last').attr('id', 'fb_post_script');
+        });
+    }
+
+
+    function startTimer() {
+        var interval = setInterval(function () {
+            var timeLimit = getNext();
+            if (timeLimit !== 0) {
+                clearInterval(interval)
+                console.log("Iam HERE");
+                setTimeout(switchDivsWithVideo(), 1000);
+                setTimeout(function () {
+                    console.log("I was waiting: " + timeLimit + " ms.");
+                    startTimer();
+                }, timeLimit)
+
+            } else {
+                setTimeout(switchDivs(), 1000);
+            }
+        }, timer)
+
+    }
+
+</script>
+
+
+<script>
+    function switchDivsWithVideo() {
+        var divs = document.getElementsByClassName("fb");
+        for (var i = 0; i < divs.length; i = i + 1) {
+            divs[i].style.display = "none";
+        }
+        document.getElementById("fb_video").style.display = "block";
+    }
+    function switchDivs() {
+        var divs = document.getElementsByClassName("fb");
+        if (divs[0].style.display === "none") {
+            divs[1].style.display = "none";
+            divs[0].style.display = "block";
+
+            divs[1].getElementsByTagName("div")[0].setAttribute("class","");
+
+            console.log("displaying div 1");
+        } else {
+            divs[0].style.display = "none";
+            divs[1].style.display = "block";
+
+            divs[0].getElementsByTagName("div")[0].setAttribute("class","");
+            console.log("displaying div 2");
+        }
+
+    }
+
+    function getHiddenPostDiv() {
+        document.getElementById("fb_video").style.display = "none";
+        var divs = document.getElementsByClassName("fb");
+        for (var i = 0; i < divs.length; i = i + 1) {
+            if (divs[i].style.display === "none") {
+                return divs[i];
+            }
+        }
+
+    }
+    function showPost(nextPostObject) {
+        var postId = nextPostObject.postId;
+        var postUrl = nextPostObject.postUrl;
+        var postType = nextPostObject.postType;
+        var timeLimit = nextPostObject.timeLimit;
+        var postHeight = nextPostObject.postHeight;
+        var postWidth = nextPostObject.postWidth;
+        var video = nextPostObject.video;
+        var divToShow;
+        if (video) {
+            divToShow = document.getElementById("fb_video");
+            divToShow.setAttribute("data-href", "https://www.facebook.com/video.php?v=" + postId);
+            if (postHeight > 720) divToShow.setAttribute("data-height", "720");
+            else divToShow.setAttribute("data-height", postHeight);
+            console.log("return, video: " + timeLimit);
+            return timeLimit;
+        } else {
+            divToShow = getHiddenPostDiv();
+            divToShow = divToShow.getElementsByTagName("div");
+            //divToShow = divToShow.firstElementChild;
+            console.log(divToShow[0].getAttribute("align"));
+            divToShow[0].setAttribute("class", "fb-post");
+            divToShow[0].setAttribute("data-href", postUrl);
+            console.log("return 0");
+            return 0;
+        }
+
+    }
+    function getNext() {
+        var timeLimit = 0;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                var nextPostObject = JSON.parse(this.responseText);
+                timeLimit = showPost(nextPostObject);
+                //reloadScript();
+                FB.XFBML.parse();
+            }
+        };
+        xhttp.open("get", "/nextpost", false);
+        xhttp.send();
+        console.log("timeLimit:" + timeLimit)
+        return timeLimit;
+    }
+</script>
+
+
+<body>
+<div id="fb-root"></div>
+<script>window.fbAsyncInit = function () {
+    FB.init({
+        fbAppId: '805156846329043',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v2.10'
+    });
+    FB.AppEvents.logPageView();
+};
+
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+        return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb_post_1" align="center" class="fb">
+    <script src = "//connect.facebook.net/sk_SK/sdk.js#xfbml=1&version=v2.10&fbAppId=805156846329043"
+            async></script>
+    <div class="fb-post"
+         align="center"
+         data-href="https://www.facebook.com/20531316728/posts/10154009990506729/"
+         data-width="500"><p>Test 1</p>
+    </div>
+</div>
+
+
+<div id="fb_post_2" align="center" class="fb">
+    <script src = "//connect.facebook.net/sk_SK/sdk.js#xfbml=1&version=v2.10&fbAppId=805156846329043"
+            async></script>
+    <div class="fb-post"
+         align="center"
+         data-href=""
+         data-width="500"><p>Test 2</p>
+    </div>
+</div>
+
+<div id="fb_video"
+     class="fb-video"
+     data-href=""
+     data-height=""
+     data-autoplay="true"
+     data-allowfullscreen="true"
+     data-show-captions="true"
+     data-show-text="true">
+    <div class="fb-xfbml-parse-ignore"></div>
+    <p>Test 3</p>
+</div>
+
+</body>
+</html>

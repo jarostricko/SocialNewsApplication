@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting</title>
+    <style>
+        body {
+            height: 100%
+        }
+
+        .vertical-center {
+            min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+            min-height: 100vh; /* These two lines are counted as one :-)       */
+
+            display: flex;
+            align-items: center;
+        }
+
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            getTitle();
+            $("#liked").click(function () {
+                $.post("/vote",
+                    {
+                        liked: "1",
+                        disliked: "0"
+                    },
+                    function (data, status) {
+                        alert("Like voted, status: " + status);
+                    });
+            });
+
+            $("#disliked").click(function () {
+                $.post("/vote",
+                    {
+                        liked: "0",
+                        disliked: "1"
+                    },
+                    function (data, status) {
+                        alert("Dislike voted, status: " + status);
+                    });
+            });
+        });
+
+        function getTitle() {
+            setInterval(function () {
+                console.log("I am here.");
+                $.getJSON("/getCurrent", function (result) {
+                    $("#title").html("Vote for: <b>"+result.postName+"</b>")
+                });
+
+            }, 1000);
+        }
+
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <p class="text-center" id="title"/>
+</div>
+<div class="container-fluid vertical-center">
+    <div class="row mx-auto">
+        <div class="col-sm mx-auto">
+            <a href="#" class="border border-0" id="liked"><img class="img-fluid center-block"
+                                                                src="images/like.jpg"></a>
+        </div>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-sm mx-auto">
+            <a href="#" class="border border-0" id="disliked"><img class="img-fluid center-block"
+                                                                   src="images/dislike.jpg"></a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
