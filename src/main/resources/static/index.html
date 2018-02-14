@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.5" async></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js/index.js"></script>
 
@@ -28,35 +29,11 @@
     <title>Title</title>
 </head>
 <body>
-<script>
-    window.fbAsyncInit = function () {
-        FB.init({
-            fbAppId: fbAppId,
-            autoLogAppEvents: true,
-            xfbml: true,
-            version: 'v2.10'
-        });
-        FB.AppEvents.logPageView();
-    };
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-            return;
-        }
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
 <div id="fb-root"></div>
 <div class="container-fluid d-flex align-items-center h-100">
     <div class="row  mx-auto">
         <div id="post1" class="post">
-            <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.5"
-                    async></script>
-            <div id="fb_post"
-                 class="fb-post"
+            <div class="fb-post"
                  data-href=""
                  data-width="750">
                 <div class="fb-xfbml-parse-ignore"></div>
@@ -64,10 +41,7 @@
         </div>
 
         <div id="post2" class="post">
-            <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.5"
-                    async></script>
-            <div id="fb_post"
-                 class="fb-post"
+            <div class="fb-post"
                  data-href=""
                  data-width="750">
                 <div class="fb-xfbml-parse-ignore"></div>
