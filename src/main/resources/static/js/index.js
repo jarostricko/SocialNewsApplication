@@ -7,40 +7,48 @@
  */
 var timer = 7000;
 var nextPostObject;
-var fbAppId;
 
 /**-------------------------------------------------------------------------------------------------------------
  *  On page Ready method.
  */
 $(document).ready(function () {
     $.getJSON("/creds", function (result) {
-        fbAppId = result.fbAppId;
+      initFB(result.fbAppId);
+      getNext();
+      startTimer();
     });
     $("#post2").hide();
     $("#video").hide();
     $("#youtube").hide();
-    getNext();
-    startTimer();
-
 });
+
+function initFB(fbAppId) {
+  FB.init({
+    fbAppId: fbAppId,
+    autoLogAppEvents: true,
+    xfbml: true,
+    version: 'v2.10'
+  });
+  //FB.AppEvents.logPageView();
+}
 function startTimer() {
     var interval = setInterval(function () {
         var timeLimit = getNext();
         if (timeLimit !== 0) {
             if (nextPostObject.postType === "youtube#video") {
                 clearInterval(interval);
-                setTimeout(switchDivsWithYoutube(), 1000);
+                setTimeout(switchDivsWithYoutube, 1000);
             } else {
                 clearInterval(interval);
                 FB.XFBML.parse(document.getElementById("video"));
-                setTimeout(switchDivsWithVideo(), 1000);
+                setTimeout(switchDivsWithVideo, 1000);
             }
             setTimeout(function () {
                 console.log("I was waiting: " + timeLimit + " ms.");
                 startTimer();
             }, timeLimit)
         } else {
-            setTimeout(switchDivs(), 1000);
+            setTimeout(switchDivs, 1000);
         }
     }, timer)
 
@@ -99,10 +107,9 @@ function showPost(nextPostObject) {
         if (postType === "youtube#video") {
             divToShow = document.getElementById("youtube");
 
-            let ytplayer = document.getElementById("ytplayer");
+            var ytplayer = document.getElementById("ytplayer");
             ytplayer.setAttribute("src","https://www.youtube.com/embed/" + postId +
                 "?autoplay=1&origin=http://localhost:8080/&cc_load_policy=0&cc_lang_pref=en&controls=0&mute=1");
-            ytplayer.src = ytplayer.src;
             //return timeLimit;
             return 10000;
 
@@ -123,10 +130,9 @@ function showPost(nextPostObject) {
         }
     } else {
         divToShow = getHiddenPostDiv();
-        $(divToShow).find("#fb_post").attr("data-href", postUrl);
+        $(divToShow).find(".fb-post").attr("data-href", postUrl);
         console.log("return 0");
         FB.XFBML.parse(divToShow);
-        FB.XFBML.parse();
         return 0;
     }
 
@@ -142,7 +148,7 @@ function getNext() {
     };
     xhttp.open("get", "/nextpost", false);
     xhttp.send();
-    console.log("timeLimit:" + timeLimit)
+    console.log("timeLimit:" + timeLimit);
     return timeLimit;
 }
 
