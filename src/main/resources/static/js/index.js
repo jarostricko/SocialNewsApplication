@@ -110,8 +110,8 @@ function showPost(nextPostObject) {
             var ytplayer = document.getElementById("ytplayer");
             ytplayer.setAttribute("src","https://www.youtube.com/embed/" + postId +
                 "?autoplay=1&origin=http://localhost:8080/&cc_load_policy=0&cc_lang_pref=en&controls=0&mute=1");
-            //return timeLimit;
-            return 10000;
+            return timeLimit;
+            //return 10000;
 
         } else {
             divToShow = document.getElementById("fb_video");
@@ -125,8 +125,8 @@ function showPost(nextPostObject) {
             console.log("return, video: " + timeLimit);
             console.log("width: " + postWidth + " Avail: " + screen.availWidth);
             console.log("height: " + postHeight + " Avail: " + screen.availHeight);
-            //return timeLimit;
-            return 10000;
+            return timeLimit;
+            //return 10000;
         }
     } else {
         divToShow = getHiddenPostDiv();
