@@ -23,6 +23,7 @@ public class Config {
     private boolean youtubeBasedOnChannelsOn;
     private boolean youtubeBasedOnQueryTermsOn;
     private String videoOrder;
+    private int postTime;
 
     @Id
     @Column(name = "id")
@@ -75,10 +76,13 @@ public class Config {
         return youtubeBasedOnQueryTermsOn;
     }
 
-    @Column(name = "videoOrder")
+    @Column(name = "video_order")
     public String getVideoOrder() {
         return videoOrder;
     }
+
+    @Column(name = "post_time")
+    public int getPostTime() { return postTime;}
 
     public void setYtNumberOfPostsToFetch(int ytNumberOfPostsToFetch) {
         this.ytNumberOfPostsToFetch = ytNumberOfPostsToFetch;
@@ -123,5 +127,10 @@ public class Config {
     public void setVideoOrder(String videoOrder) {
         this.videoOrder = videoOrder;
     }
+
+    public void setPostTime(int postTime) {
+        this.postTime = postTime;
+    }
+
 
 }

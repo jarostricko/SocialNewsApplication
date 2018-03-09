@@ -67,6 +67,7 @@ public class DatabaseAccessController {
         if (conf==null) return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         Config c = new Config();
         c.setId(1);
+        c.setPostTime(conf.getPostTime());
         c.setFacebookPostsOn(conf.isFacebookPostsOn());
         c.setFacebookVideosOn(conf.isFacebookVideosOn());
         c.setFbNumberOfPostsToFetch(conf.getFbNumberOfPostsToFetch());

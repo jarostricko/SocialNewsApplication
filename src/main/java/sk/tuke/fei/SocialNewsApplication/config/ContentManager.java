@@ -27,6 +27,7 @@ public class ContentManager {
     @Autowired
     private VotesDao votesDao;
     private boolean set = false;
+    private int postTime = 5;
     private boolean facebookPostsOn, facebookVideosOn, youtubeBasedOnChannelsOn, youtubeBasedOnQueryTermsOn;
 
 
@@ -93,13 +94,14 @@ public class ContentManager {
         Config config = configList.get(0);
         facebookPostsOn = config.isFacebookPostsOn();
         facebookVideosOn = config.isFacebookVideosOn();
+        postTime = config.getPostTime();
         youtubeBasedOnChannelsOn = config.isYoutubeBasedOnChannelsOn();
         youtubeBasedOnQueryTermsOn = config.isYoutubeBasedOnQueryTermsOn();
         if (!facebookPostsOn && !facebookVideosOn && !youtubeBasedOnQueryTermsOn && !youtubeBasedOnChannelsOn) facebookPostsOn = true;
         set = true;
     }
 
-    private static NextPost convert(Video video) {
+    private NextPost convert(Video video) {
         if (video==null)return null;
         NextPost nextPost = new NextPost();
         int height = 700;
@@ -115,13 +117,13 @@ public class ContentManager {
         nextPost.setPostWidth(width);
         nextPost.setPostId(video.getId());
         nextPost.setPostType("fb#video");
-        nextPost.setTimeLimit((int) ((video.getLength() * 1000) + 50));
+        nextPost.setTimeLimit((int) (video.getLength() * 1000));
         nextPost.setVideo(true);
         nextPost.setPostName(video.getTitle());
         return nextPost;
     }
 
-    private static NextPost convert(Post post) {
+    private NextPost convert(Post post) {
         if (post==null)return null;
         NextPost nextPost = new NextPost();
         nextPost.setVideo(false);
@@ -129,7 +131,7 @@ public class ContentManager {
         nextPost.setPostUrl(post.getPermalinkUrl());
         //nextPost.setPostType(post.getType());
         nextPost.setPostType("fb#post");
-        nextPost.setTimeLimit(5000);
+        nextPost.setTimeLimit(postTime * 1000);
         nextPost.setPostName(post.getName());
         return nextPost;
     }

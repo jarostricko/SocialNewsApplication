@@ -58,7 +58,6 @@ public class FacebookContent {
         daysLimit = config.getOldMaxDays();
         newestFirst = config.isNewestFirst();
         mostPopularFirst = config.isMostPopularFirst();
-
         pages = (List<FaceBookPage>) faceBookPageDao.findAll();
     }
 

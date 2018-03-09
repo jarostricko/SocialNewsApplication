@@ -178,7 +178,7 @@ public class YoutubeContent {
 
         NextPost nextPost = new NextPost();
         nextPost.setVideo(true);
-        nextPost.setTimeLimit(p.toStandardSeconds().getSeconds() * 1000 + 50);
+        nextPost.setTimeLimit(p.toStandardSeconds().getSeconds() * 1000);
         nextPost.setPostId(video.getId().getVideoId());
         nextPost.setPostHeight(0);
         nextPost.setPostWidth(0);

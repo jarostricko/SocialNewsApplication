@@ -10,9 +10,10 @@ $(document).ready(function () {
         newestFirst: false, mostPopularFirst: false,
         facebookPostsOn: false, facebookVideosOn: false,
         youtubeBasedOnChannelsOn: false, youtubeBasedOnQueryTermsOn: false,
-        videoOrder: ""
-    }
+        videoOrder: "", postTime: 0
+    };
     $.getJSON("/config", function (result) {
+        $("#fbTimeTd").find("input").val(result.postTime);
         $("#fbNumberTd").find("input").val(result.fbNumberOfPostsToFetch);
         $("#ytNumberTd").find("input").val(result.ytNumberOfPostsToFetch);
         $("#maxDaysTd").find("input").val(result.oldMaxDays);
@@ -30,6 +31,7 @@ $(document).ready(function () {
         if (result.youtubeBasedOnQueryTermsOn) $("#ytkonCh").prop('checked', true);
         else $("#ytkonCh").prop('checked', false);
 
+        config.postTime = result.postTime;
         config.fbNumberOfPostsToFetch = result.fbNumberOfPostsToFetch;
         config.ytNumberOfPostsToFetch = result.ytNumberOfPostsToFetch;
         config.oldMaxDays = result.oldMaxDays;
@@ -89,11 +91,47 @@ $(document).ready(function () {
         })
     });
 
+    /**----------------------------------------------------------------------------------------------------------------------------------
+     * Get VOTES RESULTS
+     */
+    $("#votesTabBtn").click(function () {
+        $("#postVotesTableBody").empty();
+        $("#videoVotesTableBody").empty();
+        $("#ytVideoVotesTableBody").empty();
+        $.getJSON("/getVotes",function (result) {
+            $.each(result, function (i, field) {
+                if (result[i].postType === "fb#post"){
+                    $("#postVotesTableBody").append("<tr>" +
+                        "<td>"+ result[i].postId +"</td>" +
+                        "<td>"+ result[i].liked +"</td>" +
+                        "<td>"+ result[i].disliked +"</td>" +
+                        "</tr>")
+                }else {
+                    if (result[i].postType === "fb#video"){
+                        $("#videoVotesTableBody").append("<tr>" +
+                            "<td>"+ result[i].postId +"</td>" +
+                            "<td>"+ result[i].liked +"</td>" +
+                            "<td>"+ result[i].disliked +"</td>" +
+                            "</tr>")
+                    }
+                    else {
+                        $("#ytVideoVotesTableBody").append("<tr>" +
+                            "<td>"+ result[i].postId +"</td>" +
+                            "<td>"+ result[i].liked +"</td>" +
+                            "<td>"+ result[i].disliked +"</td>" +
+                            "</tr>")
+                    }
+                }
+            })
+        })
+    });
+
     /**--------------------------------------------------------------------------------------------------------------
      * Getting CONFIGURATION data.
      */
     $("#configrefresh,#confTabBtn").click(function () {
         $.getJSON("/config", function (result) {
+            $("#fbTimeTd").find("input").val(result.postTime);
             $("#fbNumberTd").find("input").val(result.fbNumberOfPostsToFetch);
             $("#ytNumberTd").find("input").val(result.ytNumberOfPostsToFetch);
             $("#maxDaysTd").find("input").val(result.oldMaxDays);
@@ -111,6 +149,7 @@ $(document).ready(function () {
             if (result.youtubeBasedOnQueryTermsOn) $("#ytkonCh").prop('checked', true);
             else $("#ytkonCh").prop('checked', false);
 
+            config.postTime = result.postTime;
             config.fbNumberOfPostsToFetch = result.fbNumberOfPostsToFetch;
             config.ytNumberOfPostsToFetch = result.ytNumberOfPostsToFetch;
             config.oldMaxDays = result.oldMaxDays;
@@ -130,7 +169,7 @@ $(document).ready(function () {
     $("body").on("click", "button.editConf", function () {
         var td = $(this).parents('tr').find('td.editableColumns');
         var id = $(td)[0].getAttribute("id");
-        if (id === 'fbNumberTd' || id === 'ytNumberTd' || id === 'maxDaysTd') {
+        if (id === 'fbTimeTd' || id === 'fbNumberTd' || id === 'ytNumberTd' || id === 'maxDaysTd') {
             $(td).find('button').each(function () {
                 $(this).prop('disabled', false);
             });
@@ -154,6 +193,9 @@ $(document).ready(function () {
         var td = $(this).parents('tr').find('td.editableColumns');
         var id = $(td)[0].getAttribute("id");
         switch (id) {
+            case 'fbTimeTd':
+                config.postTime = $(td).find('input').val();
+                break;
             case 'fbNumberTd':
                 config.fbNumberOfPostsToFetch = $(td).find('input').val();
                 break;
@@ -200,7 +242,7 @@ $(document).ready(function () {
             success: function (data, status) {
                 alert("Configuration was edited. Status: " + status);
 
-                if (id === 'fbNumberTd' || id === 'ytNumberTd' || id === 'maxDaysTd') {
+                if (id === 'fbTimeTd' || id === 'fbNumberTd' || id === 'ytNumberTd' || id === 'maxDaysTd') {
                     $(td).find('button').each(function () {
                         $(this).prop('disabled', true);
                     });
@@ -542,4 +584,6 @@ $(document).ready(function () {
             clearInterval(action);
         });
     });
+
+
 });

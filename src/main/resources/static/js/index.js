@@ -12,6 +12,10 @@ var nextPostObject;
  *  On page Ready method.
  */
 $(document).ready(function () {
+    $.getJSON("/config", function (result) {
+        timer = result.postTime * 1000;
+    });
+
     $.getJSON("/creds", function (result) {
       initFB(result.fbAppId);
       getNext();
@@ -34,17 +38,16 @@ function initFB(fbAppId) {
 function startTimer() {
     var interval = setInterval(function () {
         var timeLimit = getNext();
-        if (timeLimit !== 0) {
+        if (nextPostObject.video) {
             if (nextPostObject.postType === "youtube#video") {
                 clearInterval(interval);
                 setTimeout(switchDivsWithYoutube, 1000);
             } else {
                 clearInterval(interval);
-                FB.XFBML.parse(document.getElementById("video"));
+                //FB.XFBML.parse(document.getElementById("video"));
                 setTimeout(switchDivsWithVideo, 1000);
             }
             setTimeout(function () {
-                console.log("I was waiting: " + timeLimit + " ms.");
                 startTimer();
             }, timeLimit)
         } else {
@@ -75,11 +78,9 @@ function switchDivs() {
     if (divs[0].style.display === "none") {
         divs[1].style.display = "none";
         divs[0].style.display = "block";
-        console.log("displaying div 1");
     } else {
         divs[0].style.display = "none";
         divs[1].style.display = "block";
-        console.log("displaying div 2");
     }
 
 }
@@ -121,19 +122,15 @@ function showPost(nextPostObject) {
             else divToShow.setAttribute("data-height", postHeight - 40);
             //divToShow.setAttribute("data-height", screen.availHeight - 50);
             divToShow.setAttribute("data-width", screen.availWidth-50);
-
-            console.log("return, video: " + timeLimit);
-            console.log("width: " + postWidth + " Avail: " + screen.availWidth);
-            console.log("height: " + postHeight + " Avail: " + screen.availHeight);
+            FB.XFBML.parse(document.getElementById("video"));
             return timeLimit;
             //return 10000;
         }
     } else {
         divToShow = getHiddenPostDiv();
         $(divToShow).find(".fb-post").attr("data-href", postUrl);
-        console.log("return 0");
         FB.XFBML.parse(divToShow);
-        return 0;
+        return timeLimit;
     }
 
 }
@@ -148,7 +145,7 @@ function getNext() {
     };
     xhttp.open("get", "/nextpost", false);
     xhttp.send();
-    console.log("timeLimit:" + timeLimit);
+    console.log("timeLimit: " + timeLimit / 1000 + " seconds, type: " + nextPostObject.postType);
     return timeLimit;
 }
 

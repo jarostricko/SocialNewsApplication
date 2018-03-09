@@ -10,28 +10,33 @@
     <style>
         @media ( max-width: 585px ) {
 
-            .input-group span.input-group-btn,.input-group input,.input-group button{
+            .input-group span.input-group-btn, .input-group input, .input-group button {
                 display: block;
                 width: 100%;
                 border-radius: 0;
                 margin: 0;
             }
+
             .input-group {
                 position: relative;
             }
-            .input-group span.data-up{
+
+            .input-group span.data-up {
                 position: absolute;
                 top: 0;
             }
-            .input-group span.data-dwn{
+
+            .input-group span.data-dwn {
                 position: absolute;
                 bottom: 0;
             }
+
             .form-control.text-center {
                 margin: 34px 0;
             }
-            .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group{
-                margin-left:0;
+
+            .input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group {
+                margin-left: 0;
             }
 
         }
@@ -55,6 +60,9 @@
             <li class="nav-item">
                 <a id="credentialsTabBtn" class="nav-link" data-toggle="pill" href="#credentialsTab">Credentials</a>
             </li>
+            <li class="nav-item">
+                <a id="votesTabBtn" class="nav-link" data-toggle="pill" href="#votesTab">Votes</a>
+            </li>
         </ul>
     </div>
 </div>
@@ -68,6 +76,27 @@
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <tbody id="configstablebody">
+                        <tr class="postTime">
+                            <td><b>Facebook post - time to show one post (sec)</b></td>
+                            <td id="fbTimeTd" class="editableColumns">
+                                <div class="btn-group number-spinner">
+                                <span class="input-prepend data-dwn">
+                                    <button class="btn btn-default" data-dir="dwn" disabled>-</button>
+                                </span>
+                                    <input disabled type="text" class="form-control input-box text-center" value="5"
+                                           min="5" max="30" style="max-width:100px;">
+                                    <span class="input-append data-up">
+                                    <button class="btn btn-default" data-dir="up" disabled>+</button>
+                                </span>
+                                </div>
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning btn-sm editConf'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveConf'>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
                         <tr class="fbNumber">
                             <td><b>Facebook post - number of posts to fetch</b></td>
                             <td id="fbNumberTd" class="editableColumns">
@@ -75,7 +104,8 @@
                                 <span class="input-prepend data-dwn">
                                     <button class="btn btn-default" data-dir="dwn" disabled>-</button>
                                 </span>
-                                    <input disabled type="text" class="form-control input-box text-center" value="1" min="0" max="100" style="max-width:100px;">
+                                    <input disabled type="text" class="form-control input-box text-center" value="1"
+                                           min="0" max="100" style="max-width:100px;">
                                     <span class="input-append data-up">
                                     <button class="btn btn-default" data-dir="up" disabled>+</button>
                                 </span>
@@ -95,7 +125,8 @@
                                 <span class="input-prepend data-dwn">
                                     <button class="btn btn-default" data-dir="dwn" disabled>-</button>
                                 </span>
-                                    <input disabled type="text" class="form-control input-box text-center" value="1" min="0" max="180" style="max-width:100px;">
+                                    <input disabled type="text" class="form-control input-box text-center" value="1"
+                                           min="0" max="180" style="max-width:100px;">
                                     <span class="input-append data-up">
                                     <button class="btn btn-default" data-dir="up" disabled>+</button>
                                 </span>
@@ -115,7 +146,8 @@
                                 <span class="input-prepend data-dwn">
                                     <button class="btn btn-default" data-dir="dwn" disabled>-</button>
                                 </span>
-                                    <input disabled type="text" class="form-control input-box text-center" value="1" min="0" max="365" style="max-width:100px;">
+                                    <input disabled type="text" class="form-control input-box text-center" value="1"
+                                           min="0" max="365" style="max-width:100px;">
                                     <span class="input-append data-up">
                                     <button class="btn btn-default" data-dir="up" disabled>+</button>
                                 </span>
@@ -330,8 +362,8 @@
                             <td><b>Facebook App ID</b></td>
                             <td id="appIdTd" class="editableColumns"></td>
                             <td>
-                                <button  type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
-                                <button style='display: none'  type='button' class='btn btn-danger btn-sm saveCred'>
+                                <button type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveCred'>
                                     Save
                                 </button>
                             </td>
@@ -340,8 +372,8 @@
                             <td><b>Facebook App Secret</b></td>
                             <td id="appSecTd" class="editableColumns"></td>
                             <td>
-                                <button  type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
-                                <button style='display: none'  type='button' class='btn btn-danger btn-sm saveCred'>
+                                <button type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveCred'>
                                     Save
                                 </button>
                             </td>
@@ -350,8 +382,8 @@
                             <td><b>YouTube API Key</b></td>
                             <td id="apiKeyTd" class="editableColumns"></td>
                             <td>
-                                <button  type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
-                                <button style='display: none'  type='button' class='btn btn-danger btn-sm saveCred'>
+                                <button type='button' class='btn btn-warning btn-sm editCred'>Edit</button>
+                                <button style='display: none' type='button' class='btn btn-danger btn-sm saveCred'>
                                     Save
                                 </button>
                             </td>
@@ -360,6 +392,62 @@
                     </table>
                 </div>
                 <button id="credentialsrefresh" type="button" class="btn">Refresh</button>
+            </div>
+        </div>
+        <!----------------HERE STARTS *VOTES* PART------------------------------>
+        <div id="votesTab" class="tab-pane fade"><br>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <p>FB Posts votes</p>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Post ID</th>
+                                <th>Liked</th>
+                                <th>Disliked</th>
+                            </tr>
+                            </thead>
+                            <tbody id="postVotesTableBody">
+                            <tr>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col">
+                        <p>FB videos votes</p>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Post ID</th>
+                                <th>Liked</th>
+                                <th>Disliked</th>
+                            </tr>
+                            </thead>
+                            <tbody id="videoVotesTableBody">
+                            <tr>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <p>YouTube videos votes</p>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Post ID</th>
+                                <th>Liked</th>
+                                <th>Disliked</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ytVideoVotesTableBody">
+                            <tr>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
