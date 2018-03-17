@@ -15,7 +15,6 @@ import java.util.List;
  */
 @Component
 public class ContentManager {
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
     private NextPost currentPost;
     private static int i = 10;
     @Autowired
@@ -34,7 +33,7 @@ public class ContentManager {
     public NextPost getNextPost() {
         if (!set) setConfigs();
 
-        if (i > 0) {
+        if (i >= 0) {
             if (i == 5) {
                 i--;
                 if (facebookVideosOn) {
