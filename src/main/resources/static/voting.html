@@ -48,11 +48,9 @@
 
         function getTitle() {
             setInterval(function () {
-                console.log("I am here.");
                 $.getJSON("/getCurrent", function (result) {
                     $("#title").html("Vote for: <b>"+result.postName+"</b>")
                 });
-
             }, 1000);
         }
 

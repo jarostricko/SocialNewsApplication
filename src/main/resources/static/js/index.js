@@ -18,7 +18,7 @@ $(document).ready(function () {
 
     $.getJSON("/creds", function (result) {
       initFB(result.fbAppId);
-      getNext();
+      //getNext();
       startTimer();
     });
     $("#post2").hide();
@@ -94,43 +94,33 @@ function getHiddenPostDiv() {
     }
 
 }
-function showPost(nextPostObject) {
-    var postId = nextPostObject.postId;
-    var postUrl = nextPostObject.postUrl;
-    var postType = nextPostObject.postType;
-    var timeLimit = nextPostObject.timeLimit;
-    var postHeight = nextPostObject.postHeight;
-    var postWidth = nextPostObject.postWidth;
-    var video = nextPostObject.video;
-    var htmlIframe = nextPostObject.iframeHtml;
+function showPost() {
     var divToShow;
-    if (video) {
-        if (postType === "youtube#video") {
+    if (nextPostObject.video) {
+        if (nextPostObject.postType === "youtube#video") {
             divToShow = document.getElementById("youtube");
 
             var ytplayer = document.getElementById("ytplayer");
-            ytplayer.setAttribute("src","https://www.youtube.com/embed/" + postId +
+            ytplayer.setAttribute("src","https://www.youtube.com/embed/" + nextPostObject.postId +
                 "?autoplay=1&origin=http://localhost:8080/&cc_load_policy=0&cc_lang_pref=en&controls=0&mute=1");
-            return timeLimit;
-            //return 10000;
+            return nextPostObject.timeLimit;
 
         } else {
             divToShow = document.getElementById("fb_video");
-            divToShow.setAttribute("data-href", "https://www.facebook.com/video.php?v=" + postId);
+            divToShow.setAttribute("data-href", "https://www.facebook.com/video.php?v=" + nextPostObject.postId);
 
-            if (postHeight > screen.availHeight) divToShow.setAttribute("data-height", screen.availHeight - 50);
-            else divToShow.setAttribute("data-height", postHeight - 40);
+            if (nextPostObject.postHeight > screen.availHeight) divToShow.setAttribute("data-height", screen.availHeight - 50);
+            else divToShow.setAttribute("data-height", nextPostObject.postHeight - 40);
             //divToShow.setAttribute("data-height", screen.availHeight - 50);
             divToShow.setAttribute("data-width", screen.availWidth-50);
             FB.XFBML.parse(document.getElementById("video"));
-            return timeLimit;
-            //return 10000;
+            return nextPostObject.timeLimit;
         }
     } else {
         divToShow = getHiddenPostDiv();
-        $(divToShow).find(".fb-post").attr("data-href", postUrl);
+        $(divToShow).find(".fb-post").attr("data-href", nextPostObject.postUrl);
         FB.XFBML.parse(divToShow);
-        return timeLimit;
+        return nextPostObject.timeLimit;
     }
 
 }
@@ -140,7 +130,7 @@ function getNext() {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             nextPostObject = JSON.parse(this.responseText);
-            timeLimit = showPost(nextPostObject);
+            timeLimit = showPost();
         }
     };
     xhttp.open("get", "/nextpost", false);

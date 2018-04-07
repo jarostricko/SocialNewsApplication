@@ -53,10 +53,8 @@ public class YoutubeContent {
      */
     public YouTube getYouTubeService() {
         YouTube youtube = new YouTube.Builder(new NetHttpTransport(),
-                JacksonFactory.getDefaultInstance(), new HttpRequestInitializer() {
-            @Override
-            public void initialize(HttpRequest httpRequest) throws IOException { }
-        }).setYouTubeRequestInitializer(new YouTubeRequestInitializer(apiKey))
+                JacksonFactory.getDefaultInstance(),
+                httpRequest -> { }).setYouTubeRequestInitializer(new YouTubeRequestInitializer(apiKey))
                 .setApplicationName("social-news-application-tuke-sk").build();
         return youtube;
     }
