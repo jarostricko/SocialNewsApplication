@@ -66,12 +66,22 @@ public class FacebookContent {
      *
      * @param list is list of Post to be sorted.
      */
-    private void sortList(List<Post> list) {
+    private void sortByPopularity(List<Post> list) {
         list.sort((p1, p2) -> {
             int thisCount = (int) (p1.getReactionsCount() + p1.getCommentsCount() + p1.getSharesCount());
             int tmpCount = (int) (p2.getReactionsCount() + p2.getCommentsCount() + p2.getSharesCount());
             if (thisCount < tmpCount) return 1;
             else if (thisCount > tmpCount) return -1;
+            else return 0;
+        });
+    }
+
+    private void sortByCreateDate(List<Post> list) {
+        list.sort((p1, p2) -> {
+            Date thisDate = p1.getCreatedTime();
+            Date tmpDate = p2.getCreatedTime();
+            if (thisDate.before(tmpDate)) return 1;
+            else if (thisDate.after(tmpDate)) return -1;
             else return 0;
         });
     }
@@ -95,25 +105,28 @@ public class FacebookContent {
         for (FaceBookPage p : pages) {
             if (p.isActive()) {
                 System.out.println(p.toString());
-                String createDate;
                 Connection<Post> result = fetchConnection(p);
-                int limit = this.limit;
-                for (List<Post> page : result) {
-                    for (Post post : page) {
-                        if (!(post.getType().equals("video") && post.getLink().contains("facebook.com/"))) {
-                            if (!posts.contains(post) && post.getCreatedTime().after(getDateBeforeLimit())) {
-                                if (!post.getType().equals("event"))
-                                    posts.add(post);
+                List<Post> resultList = new ArrayList<>();
+                int limit = this.limit * 2;
+                exportDataAsList(result, resultList, limit);
+                sortByPopularity(resultList);
+                limit = this.limit;
+                for (Post post : resultList) {
+                    if (!(post.getType().equals("video") && post.getLink().contains("facebook.com/"))) {
+                        if (!posts.contains(post) && post.getCreatedTime().after(getDateBeforeLimit())) {
+                            if (!post.getType().equals("event")) {
+                                posts.add(post);
+                                limit--;
                             }
                         }
-                        limit--;
                     }
                     if (limit <= 0) break;
                 }
             }
         }
 
-        if (mostPopularFirst) sortList(posts);
+        if (mostPopularFirst) sortByPopularity(posts);
+        else sortByCreateDate(posts);
     }
 
     private java.util.Date getDateBeforeLimit() {
@@ -133,21 +146,37 @@ public class FacebookContent {
             if (p.isActive()) {
                 System.out.println(p.toString());
                 Connection<Post> result = fetchConnection(p);
-                int limit = this.limit;
-                for (List<Post> page : result) {
-                    for (Post post : page) {
-                        if (post.getType().equals("video") && post.getLink().contains("facebook.com/")) {
-                            if (!videos.contains(post) && post.getCreatedTime().after(getDateBeforeLimit())) {
+                List<Post> resultList = new ArrayList<>();
+                int limit = this.limit * 2;
+                exportDataAsList(result, resultList, limit);
+                sortByPopularity(resultList);
+                limit = this.limit;
+                for (Post post : resultList) {
+                    if (post.getType().equals("video") && post.getLink().contains("facebook.com/")) {
+                        if (!videos.contains(post) && post.getCreatedTime().after(getDateBeforeLimit())) {
+                            if (!post.getType().equals("event")) {
                                 videos.add(post);
+                                limit--;
                             }
                         }
-                        limit--;
                     }
                     if (limit <= 0) break;
                 }
             }
         }
-        if (mostPopularFirst) sortList(videos);
+        if (mostPopularFirst) sortByPopularity(videos);
+        else sortByCreateDate(videos);
+    }
+
+    private void exportDataAsList(Connection<Post> result, List<Post> resultList, int limit) {
+        for (List<Post> page : result) {
+            for (Post post : page) {
+                resultList.add(post);
+                limit--;
+                if (limit <= 0) break;
+            }
+            if (limit <= 0) break;
+        }
     }
 
     public NamedFacebookType getNextFacebookPost() {
@@ -159,7 +188,6 @@ public class FacebookContent {
         System.out.println("Total count score: " + (nextPost.getReactionsCount() + nextPost.getSharesCount() + nextPost.getCommentsCount()));
         //post which is going to be showed is removed from list
         posts.remove(0);
-        //return nextURL;
         return nextPost;
     }
 

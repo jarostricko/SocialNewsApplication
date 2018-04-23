@@ -3,6 +3,7 @@ package sk.tuke.fei.SocialNewsApplication.Model;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -11,4 +12,7 @@ import java.util.List;
 @Transactional
 public interface VotesDao extends CrudRepository<Votes,Integer> {
     List<Votes> findAllByPostType(String postType);
+
+    List<Votes> findAllByDateAfterAndPostType(Timestamp timestamp, String postType);
+
 }

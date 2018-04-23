@@ -17,9 +17,9 @@ $(document).ready(function () {
     });
 
     $.getJSON("/creds", function (result) {
-      initFB(result.fbAppId);
-      //getNext();
-      startTimer();
+        initFB(result.fbAppId);
+        //getNext();
+        startTimer();
     });
     $("#post2").hide();
     $("#video").hide();
@@ -27,14 +27,15 @@ $(document).ready(function () {
 });
 
 function initFB(fbAppId) {
-  FB.init({
-    fbAppId: fbAppId,
-    autoLogAppEvents: true,
-    xfbml: true,
-    version: 'v2.10'
-  });
-  //FB.AppEvents.logPageView();
+    FB.init({
+        fbAppId: fbAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v2.10'
+    });
+    //FB.AppEvents.logPageView();
 }
+
 function startTimer() {
     var interval = setInterval(function () {
         var timeLimit = getNext();
@@ -53,9 +54,9 @@ function startTimer() {
         } else {
             setTimeout(switchDivs, 1000);
         }
-    }, timer)
-
+    }, timer);
 }
+
 function switchDivsWithVideo() {
     $("#youtube").hide();
     $("#post1").hide();
@@ -71,6 +72,7 @@ function switchDivsWithYoutube() {
 
     $("#youtube").show();
 }
+
 function switchDivs() {
     $("#video").hide();
     $("#youtube").hide();
@@ -82,7 +84,6 @@ function switchDivs() {
         divs[0].style.display = "none";
         divs[1].style.display = "block";
     }
-
 }
 
 function getHiddenPostDiv() {
@@ -94,6 +95,7 @@ function getHiddenPostDiv() {
     }
 
 }
+
 function showPost() {
     var divToShow;
     if (nextPostObject.video) {
@@ -101,7 +103,7 @@ function showPost() {
             divToShow = document.getElementById("youtube");
 
             var ytplayer = document.getElementById("ytplayer");
-            ytplayer.setAttribute("src","https://www.youtube.com/embed/" + nextPostObject.postId +
+            ytplayer.setAttribute("src", "https://www.youtube.com/embed/" + nextPostObject.postId +
                 "?autoplay=1&origin=http://localhost:8080/&cc_load_policy=0&cc_lang_pref=en&controls=0&mute=1");
             return nextPostObject.timeLimit;
 
@@ -109,10 +111,11 @@ function showPost() {
             divToShow = document.getElementById("fb_video");
             divToShow.setAttribute("data-href", "https://www.facebook.com/video.php?v=" + nextPostObject.postId);
 
-            if (nextPostObject.postHeight > screen.availHeight) divToShow.setAttribute("data-height", screen.availHeight - 50);
-            else divToShow.setAttribute("data-height", nextPostObject.postHeight - 40);
-            //divToShow.setAttribute("data-height", screen.availHeight - 50);
-            divToShow.setAttribute("data-width", screen.availWidth-50);
+            divToShow.setAttribute("data-width", screen.availWidth - 50);
+            //if (nextPostObject.postHeight >= screen.availHeight) divToShow.setAttribute("data-height", screen.availHeight - 50);
+            //else divToShow.setAttribute("data-height", nextPostObject.postHeight - 40);
+            divToShow.setAttribute("data-height", screen.availHeight - 80);
+
             FB.XFBML.parse(document.getElementById("video"));
             return nextPostObject.timeLimit;
         }
@@ -120,10 +123,12 @@ function showPost() {
         divToShow = getHiddenPostDiv();
         $(divToShow).find(".fb-post").attr("data-href", nextPostObject.postUrl);
         FB.XFBML.parse(divToShow);
+        //divToShow.style.transform = "scale(1.3,1.3)";
         return nextPostObject.timeLimit;
     }
 
 }
+
 function getNext() {
     var timeLimit = 0;
     var xhttp = new XMLHttpRequest();
